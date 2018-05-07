@@ -4,14 +4,22 @@ import dash
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
+# from flask import send_from_directory
+# import os
 
 app = dash.Dash()
 
 app.scripts.config.serve_locally = True
 
+
 app.layout = html.Div([
+    # html.Link(
+    #         rel='stylesheet',
+    #         href='/static/stylesheet.css'
+    # ),
+
     html.H1(['Make your own palette'],
-    style={'margin-left': '10%', 'margin-bottom': '7%'}),
+    style={'margin-left': '10%', 'margin-bottom': '7%', 'margin-top': '10%'}),
 
     html.Div([
         dcc.Upload(
@@ -21,10 +29,11 @@ app.layout = html.Div([
                 html.A('Select Files')
             ]),
             style={
+                'font-size': '20px',
                 'width': '100%',
                 'height': '60px',
                 'lineHeight': '60px',
-                'borderWidth': '1px',
+                'borderWidth': '3px',
                 'borderStyle': 'dashed',
                 'borderRadius': '5px',
                 'textAlign': 'center',
@@ -37,12 +46,12 @@ app.layout = html.Div([
     ],
     style={'width': '80%', 'position': 'auto', 'margin': 'auto'}),
 ],
-style={'position': 'relative', 'width': '100%', 'margin': '60px 0', 'font-family': 'Dosis'})
+style={'position': 'relative', 'width': '100%', 'font-family': 'Dosis'})
 
 
 def parse_contents(contents, filename, date):
     return html.Div([
-        html.H5(filename),
+        html.H5([filename], style={'margin-top': '5%'}),
         html.H6(datetime.datetime.fromtimestamp(date)),
 
         # HTML images accept base64 encoded strings in the same format
@@ -68,6 +77,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
 
+
 external_css = [
     # dash stylesheet
     'https://fonts.googleapis.com/css?family=Raleway',
@@ -75,6 +85,11 @@ external_css = [
 ]
 for css in external_css:
     app.css.append_css({'external_url': css})
+
+# @app.server.route('/static/<path>')
+# def static_file(path):
+#     static_folder = os.path.join(os.getcwd(), 'static')
+#     return send_from_directory(static_folder, path)
 
 
 if __name__ == '__main__':
