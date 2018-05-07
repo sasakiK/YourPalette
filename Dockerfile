@@ -8,7 +8,8 @@ RUN pip install uWSGI==2.0.8 \
                 dash-html-components==0.10.1 \
                 dash-core-components==0.22.1  \
                 plotly \
-                pandas
+                pandas \
+                Pillow==4.2.1
 WORKDIR /app
 COPY app /app
 COPY cmd.sh /
