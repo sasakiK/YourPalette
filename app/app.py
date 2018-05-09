@@ -16,31 +16,9 @@ app = dash.Dash()
 app.title='Your Palette'
 app.scripts.config.serve_locally = True
 
-# --------------------- app layout ---------------------
+# define objects
 
-app.layout = html.Div([
-    html.Link(
-        rel='stylesheet',
-        href='/static/st0.css'
-    ),
-    html.Div([
-        html.Div([
-            html.Div(["Your Palette"], id="header")
-        ],id="header-bk")
-    ],id="header-fixed"),
-
-    html.H1(['Make your own palette'],
-    style={'font-size': '6vw', 'margin-left': '11%', 'margin-bottom': '7%', 'margin-top': '150px'}),
-
-    html.Div([
-        dcc.Upload(
-            id='upload-image',
-            children=html.Div([
-                'Drag  and  Drop  or  ',
-                html.A('Select  Files')
-            ]),
-            style={
-                'font-size': '3.4vw',
+upload_style = {'font-size': '3.4vw',
                 'width': '100%',
                 'height': '80px',
                 'lineHeight': '60px',
@@ -50,12 +28,50 @@ app.layout = html.Div([
                 'border-color': 'grey',
                 'textAlign': 'center',
                 'margin': '20px',
-                'padding-top': '20px'
-            },
+                'padding-top': '20px',
+                'letter-spacing': '0.04em'}
+
+# --------------------- app layout ---------------------
+
+app.layout = html.Div([
+
+    # use external css
+    html.Link(
+        rel='stylesheet',
+        href='/static/st10.css'
+    ),
+    # header div
+    html.Div([
+        html.Div([
+            html.Div(["Your Palette"], id="header")
+        ],id="header-bk")
+    ],id="header-fixed"),
+
+    # title
+    html.H1(['Make your own palette'],
+    style={'font-size': '6vw', 'margin-left': '11%', 'margin-bottom': '7%', 'margin-top': '150px'}),
+
+    # upload div
+    html.Div([
+        dcc.Upload(
+            id='upload-image',
+            children=html.Div([
+                'Drag and Drop or ',
+                html.A('Select Files')
+            ]),
+            style=upload_style,
             # Allow multiple files to be uploaded
             multiple=True
         ),
         html.Div(id='output-image-upload'),
+
+        # footer div
+        html.Div([
+            html.Div([
+                html.Div([dcc.Link('@sasakiK', href='https://qiita.com/sasaki_K_sasaki')], id="footer")
+            ],id="footer-bk")
+        ],id="footer-fixed"),
+
     ],
     style={'width': '80%', 'position': 'auto', 'margin': 'auto'}),
 ],
@@ -64,10 +80,12 @@ style={'position': 'relative', 'width': '100%', 'font-family': 'Dosis'})
 
 
 def parse_contents(contents, filename, date):
+    # upload time
+    date_u = datetime.datetime.fromtimestamp(date)
 
     return html.Div([
         html.H5([filename], style={'margin-top': '8%'}),
-        html.H5(datetime.datetime.fromtimestamp(date)),
+        html.H5(str(date_u.year) + "/" + str(date_u.month) + "/" + str(date_u.day) ),
 
         # HTML images accept base64 encoded strings in the same format
         # that is supplied by the upload
@@ -93,12 +111,6 @@ def get_colors(infile, numcolors=10, swatchsize=20, resize=150):
     pal = Image.new('RGB', (swatchsize*numcolors, swatchsize))
 
     return pal
-
-# def head():
-#     path = request.path
-#     return html.Title(path)
-#
-# app.head = head
 
 
 @app.callback(Output('output-image-upload', 'children'),
