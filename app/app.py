@@ -10,63 +10,47 @@ import os
 
 from PIL import Image, ImageDraw
 
+# --------------------- app option ---------------------
+
 app = dash.Dash()
 app.title='Your Palette'
 app.scripts.config.serve_locally = True
 
-
-# app.head = [('''
-#     <style type="text/css">
-#     html, body {
-#       height: 100%;
-#       background-color: #003F98 !important;
-#       font-size: "30px";
-#     }
-#     </style>
-#     '''),
-#     html.Title(path)
-# ]
-#
-# app.footer = [
-#     html.Script(type='text/javascript', children='alert("hello world")')
-# ]
-
+# --------------------- app layout ---------------------
 
 app.layout = html.Div([
     html.Link(
         rel='stylesheet',
-        href='/static/stylesheet.css'
+        href='/static/st0.css'
     ),
+    html.Div([
+        html.Div([
+            html.Div(["Your Palette"], id="header")
+        ],id="header-bk")
+    ],id="header-fixed"),
 
     html.H1(['Make your own palette'],
-    style={'font-size': '6vw', 'margin-left': '11%', 'margin-bottom': '7%', 'margin-top': '10%'}),
-
-    html.P(['Using this application, you can get color palette from your favorite (jpg/png) file.'],
-    style={'font-size': '2.7vw',
-           'margin-left': '11%',
-           'margin-bottom': '7%',
-           'margin-top': '5%',
-           'width' : '65%'}),
-
+    style={'font-size': '6vw', 'margin-left': '11%', 'margin-bottom': '7%', 'margin-top': '150px'}),
 
     html.Div([
         dcc.Upload(
             id='upload-image',
             children=html.Div([
-                'Drag and Drop or ',
-                html.A('Select Files')
+                'Drag  and  Drop  or  ',
+                html.A('Select  Files')
             ]),
             style={
                 'font-size': '3.4vw',
                 'width': '100%',
-                'height': '60px',
+                'height': '80px',
                 'lineHeight': '60px',
                 'borderWidth': '3px',
                 'borderStyle': 'dashed',
-                'borderRadius': '5px',
+                'borderRadius': '7px',
                 'border-color': 'grey',
                 'textAlign': 'center',
-                'margin': '10px'
+                'margin': '20px',
+                'padding-top': '20px'
             },
             # Allow multiple files to be uploaded
             multiple=True
@@ -75,6 +59,7 @@ app.layout = html.Div([
     ],
     style={'width': '80%', 'position': 'auto', 'margin': 'auto'}),
 ],
+id='wrapper',
 style={'position': 'relative', 'width': '100%', 'font-family': 'Dosis'})
 
 
@@ -129,7 +114,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
 
 
 
-@app.server.route('/static/<path:path>')
+@app.server.route('/static/<path>')
 def static_file(path):
     static_folder = os.path.join(os.getcwd(), 'static')
     return send_from_directory(static_folder, path)
