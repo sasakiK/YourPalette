@@ -19,6 +19,7 @@ app.scripts.config.serve_locally = True
 # define objects
 
 upload_style = {'font-size': '3.4vw',
+                'color' : 'white',
                 'width': '100%',
                 'height': '80px',
                 'lineHeight': '60px',
@@ -38,7 +39,7 @@ app.layout = html.Div([
     # use external css
     html.Link(
         rel='stylesheet',
-        href='/static/st15.css'
+        href='/static/st23.css'
     ),
     # header div
     html.Div([

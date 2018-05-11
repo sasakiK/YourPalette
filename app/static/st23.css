@@ -1,29 +1,13 @@
 
 /* ---------- whole ---------- */
-
-html{
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background: -moz-linear-gradient(bottom, #73CDC4, #FFF);
-  background: -webkit-linear-gradient(bottom, #73CDC4, #FFF);
-  background: linear-gradient(to top, #73CDC4, #FFF);
-  color: white;
-}
-
-body{
-  color: #73CDC4;
-}
-
-/* html, body {
+html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
   background-color: #73CDC4;
   color: white;
-} */
+}
 
 /* ---------- wrapper ---------- */
 
