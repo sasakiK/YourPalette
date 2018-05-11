@@ -38,7 +38,7 @@ app.layout = html.Div([
     # use external css
     html.Link(
         rel='stylesheet',
-        href='/static/st10.css'
+        href='/static/st15.css'
     ),
     # header div
     html.Div([
