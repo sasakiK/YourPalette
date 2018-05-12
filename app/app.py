@@ -8,7 +8,10 @@ import dash_html_components as html
 from flask import send_from_directory
 import os
 
+# for images
 from PIL import Image, ImageDraw
+import base64
+from io import BytesIO
 
 # --------------------- app option ---------------------
 
@@ -39,7 +42,7 @@ app.layout = html.Div([
     # use external css
     html.Link(
         rel='stylesheet',
-        href='/static/st23.css'
+        href='/static/st25.css'
     ),
     # header div
     html.Div([
@@ -80,29 +83,10 @@ id='wrapper',
 style={'position': 'relative', 'width': '100%', 'font-family': 'Dosis'})
 
 
-def parse_contents(contents, filename, date):
-    # upload time
-    date_u = datetime.datetime.fromtimestamp(date)
-
-    return html.Div([
-        html.H5([filename], style={'margin-top': '8%'}),
-        html.H5(str(date_u.year) + "/" + str(date_u.month) + "/" + str(date_u.day) ),
-
-        # HTML images accept base64 encoded strings in the same format
-        # that is supplied by the upload
-        html.Img(src=contents),
-        html.Hr(),
-        html.Div('Raw Content'),
-        html.Pre(contents[0:200] + '...', style={
-            'whiteSpace': 'pre-wrap',
-            'wordBreak': 'break-all'
-        }),
-        html.Hr(),
-    ])
+# --------------------- app functions ---------------------
 
 def get_colors(infile, numcolors=10, swatchsize=20, resize=150):
-
-    image = Image.open("DASH.png")
+    image = Image.open(infile)
     image = image.resize((resize, resize))
     result = image.convert('P', palette=Image.ADAPTIVE, colors=numcolors)
     result.putalpha(0)
@@ -111,7 +95,54 @@ def get_colors(infile, numcolors=10, swatchsize=20, resize=150):
     # Save colors to file
     pal = Image.new('RGB', (swatchsize*numcolors, swatchsize))
 
-    return pal
+    draw = ImageDraw.Draw(pal)
+
+    posx = 0
+    for count, col in colors:
+        draw.rectangle([posx, 0, posx+swatchsize, swatchsize], fill=col)
+        posx = posx + swatchsize
+
+    del draw
+    pal.save('outfile.png', "PNG")
+
+
+def parse_contents(contents, filename, date):
+    # upload time
+    date_u = datetime.datetime.fromtimestamp(date)
+
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+
+    image_path = BytesIO(decoded)
+    # color extraction
+    get_colors(infile = image_path)
+
+    image_filename = 'outfile.png' # replace with your own image
+    encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+
+    # return pal
+
+    return html.Div([
+        html.H5(['File Name　:　' +  filename], style={'margin-top': '5%'}),
+        html.H5(['Upload date :　' + str(date_u.year) + "/" + str(date_u.month) + "/" + str(date_u.day)], style={'margin-bottom': '5%'} ),
+
+        # HTML images accept base64 encoded strings in the same format
+        # that is supplied by the upload
+        html.Img(src=contents, style={'width': '300px'}, className="animated bounceInDown"),
+        html.Hr(),
+
+        # extracted image
+        html.H5(['Result']),
+        html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()),
+                 style={'width': '300px'}),
+        html.Div('Raw Content'),
+        html.Pre(contents[0:30] + '...', style={
+            'whiteSpace': 'pre-wrap',
+            'wordBreak': 'break-all'
+        }),
+        html.Hr(),
+    ])
 
 
 @app.callback(Output('output-image-upload', 'children'),
@@ -127,15 +158,16 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
 
 
 
-@app.server.route('/static/<path>')
-def static_file(path):
-    static_folder = os.path.join(os.getcwd(), 'static')
-    return send_from_directory(static_folder, path)
+# @app.server.route('/static/<path>')
+# def static_file(path):
+#     static_folder = os.path.join(os.getcwd(), 'static')
+#     return send_from_directory(static_folder, path)
 
 external_css = [
     # dash stylesheet
     'https://fonts.googleapis.com/css?family=Raleway',
-    'https://codepen.io/chriddyp/pen/bWLwgP.css'
+    'https://codepen.io/chriddyp/pen/bWLwgP.css',
+    'https://raw.githubusercontent.com/daneden/animate.css/master/animate.css'
 ]
 for css in external_css:
     app.css.append_css({'external_url': css})
