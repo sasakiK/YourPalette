@@ -72,7 +72,7 @@ app.layout = html.Div([
         # footer div
         html.Div([
             html.Div([
-                html.Div([dcc.Link('@sasakiK', href='https://qiita.com/sasaki_K_sasaki')], id="footer")
+                html.Div([html.A('@sasakiK', href='https://qiita.com/sasaki_K_sasaki')], id="footer")
             ],id="footer-bk")
         ],id="footer-fixed"),
 
@@ -111,9 +111,7 @@ def parse_contents(contents, filename, date):
     date_u = datetime.datetime.fromtimestamp(date)
 
     content_type, content_string = contents.split(',')
-
     decoded = base64.b64decode(content_string)
-
     image_path = BytesIO(decoded)
     # color extraction
     get_colors(infile = image_path)
@@ -124,24 +122,29 @@ def parse_contents(contents, filename, date):
     # return pal
 
     return html.Div([
-        html.H5(['File Name　:　' +  filename], style={'margin-top': '5%'}),
-        html.H5(['Upload date :　' + str(date_u.year) + "/" + str(date_u.month) + "/" + str(date_u.day)], style={'margin-bottom': '5%'} ),
+        html.Div([
+            html.Div([
+                html.H5(['File Name　:　' +  filename], style={'margin-top': '5%'}),
+                html.H5(['Upload date :　' + str(date_u.year) + "/" + str(date_u.month) + "/" + str(date_u.day)], style={'margin-bottom': '5%'} ),
 
-        # HTML images accept base64 encoded strings in the same format
-        # that is supplied by the upload
-        html.Img(src=contents, style={'width': '300px'}, className="animated bounceInDown"),
-        html.Hr(),
-
-        # extracted image
-        html.H5(['Result']),
-        html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()),
-                 style={'width': '300px'}),
-        html.Div('Raw Content'),
-        html.Pre(contents[0:30] + '...', style={
-            'whiteSpace': 'pre-wrap',
-            'wordBreak': 'break-all'
-        }),
-        html.Hr(),
+                html.Img(src=contents, style={'width': '200px'}, className="animated bounceInDown")
+            ], style={'float': 'left', 'width':'50%'}),
+            html.Div([
+                # extracted image
+                html.H5(['Result']),
+                html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()),
+                         style={'width': '200px'})
+            ], style={'float': 'left', 'width':'50%'})
+        ]),
+        html.Div([
+            html.Hr(),
+            html.Div('Raw Content'),
+            html.Pre(contents[0:30] + '...', style={
+                'whiteSpace': 'pre-wrap',
+                'wordBreak': 'break-all'
+            }),
+            html.Hr(),
+        ])
     ])
 
 
