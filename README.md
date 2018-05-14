@@ -28,5 +28,5 @@ Just uploading your favorite image in upload component.
 Then you will get image palette.
 
 App image is like that ...
-
-![app image](https://github.com/sasakiK/Images/blob/master/YourPalette.png?raw=true)
+s
+<img src="https://github.com/sasakiK/Images/blob/master/YourPalette.png?raw=true" width="70%">
